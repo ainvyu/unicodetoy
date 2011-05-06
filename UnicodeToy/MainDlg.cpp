@@ -77,15 +77,15 @@ LRESULT CMainDlg::OnEnChangeUserInput(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /
         // UTF-16
         std::wstring strUTF16Bytes;
         for (int i = 0; i < strUTF16.size(); ++i) {
-            char hl = strUTF16[i] & 0xff;
-            char ll = (strUTF16[i] >> 8) & 0xff;
+            char highbyte = (strUTF16[i] >> 8) & 0xff;
+            char lowbyte  = strUTF16[i] & 0xff;
 
             strUTF16Bytes += _T("0x");
-            strUTF16Bytes += CStringUtil::MakeUpper(CStringUtil::IntToStr((UCHAR)hl, 16));
+            strUTF16Bytes += CStringUtil::MakeUpper(CStringUtil::IntToStr((UCHAR)highbyte, 16));
             strUTF16Bytes += _T(", ");
 
             strUTF16Bytes += _T("0x");
-            strUTF16Bytes += CStringUtil::MakeUpper(CStringUtil::IntToStr((UCHAR)ll, 16));
+            strUTF16Bytes += CStringUtil::MakeUpper(CStringUtil::IntToStr((UCHAR)lowbyte, 16));
             strUTF16Bytes += _T(", ");
         }
 
