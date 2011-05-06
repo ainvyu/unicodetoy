@@ -1,0 +1,3 @@
+[submodule "lib/libUtil"]
+	path = lib/libUtil
+	url = http://nvstudio.dyndns.org/git/dev/project/libUtil.git
