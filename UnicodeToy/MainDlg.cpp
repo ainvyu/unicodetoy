@@ -59,40 +59,44 @@ LRESULT CMainDlg::OnEnChangeUserInput(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /
     arr[nWndTxtSize-1] = '\0';
 
     std::wstring strUTF16(&arr[0]);
-    if (!strUTF16.empty()) {
-        // UTF-8
-        std::string strUTF8 = CStringEncode::UTF8FromUTF16(strUTF16);
 
-        std::wstring strUTF8Bytes;
-        std::for_each(strUTF8.begin(), strUTF8.end(), [&] (char byte) {
-            strUTF8Bytes += _T("0x");
-            strUTF8Bytes += CStringUtil::MakeUpper(CStringUtil::IntToStr((UCHAR)byte, 16));
-            strUTF8Bytes += _T(", ");
-        });
-
-        ATL::CWindow wndUTF8 = GetDlgItem(IDC_EDIT_UTF8);
-        wndUTF8.SetWindowText(strUTF8Bytes.c_str());
-        wndUTF8.RedrawWindow();
-
-        // UTF-16
-        std::wstring strUTF16Bytes;
-        for (int i = 0; i < strUTF16.size(); ++i) {
-            char highbyte = (strUTF16[i] >> 8) & 0xff;
-            char lowbyte  = strUTF16[i] & 0xff;
-
-            strUTF16Bytes += _T("0x");
-            strUTF16Bytes += CStringUtil::MakeUpper(CStringUtil::IntToStr((UCHAR)highbyte, 16));
-            strUTF16Bytes += _T(", ");
-
-            strUTF16Bytes += _T("0x");
-            strUTF16Bytes += CStringUtil::MakeUpper(CStringUtil::IntToStr((UCHAR)lowbyte, 16));
-            strUTF16Bytes += _T(", ");
-        }
-
-        ATL::CWindow wndUTF16 = GetDlgItem(IDC_EDIT_UTF16);
-        wndUTF16.SetWindowText(strUTF16Bytes.c_str());
-        wndUTF16.RedrawWindow();
-    }
+    UpdateUTF16(strUTF16);
+    UpdateUTF8(CStringEncode::UTF8FromUTF16(strUTF16));
     
     return 0;
+}
+
+void CMainDlg::UpdateUTF8(const std::string& strUTF8) const
+{
+    std::wstring strUTF8Bytes;
+    std::for_each(strUTF8.begin(), strUTF8.end(), [&] (char byte) {
+        strUTF8Bytes += _T("0x");
+        strUTF8Bytes += CStringUtil::MakeUpper(CStringUtil::IntToStr((UCHAR)byte, 16));
+        strUTF8Bytes += _T(", ");
+    });
+
+    ATL::CWindow wndUTF8 = GetDlgItem(IDC_EDIT_UTF8);
+    wndUTF8.SetWindowText(strUTF8Bytes.c_str());
+    wndUTF8.RedrawWindow();
+}
+
+void CMainDlg::UpdateUTF16(const std::wstring& strUTF16) const
+{
+    std::wstring strUTF16Bytes;
+    for (int i = 0; i < strUTF16.size(); ++i) {
+        char highbyte = (strUTF16[i] >> 8) & 0xff;
+        char lowbyte  = strUTF16[i] & 0xff;
+
+        strUTF16Bytes += _T("0x");
+        strUTF16Bytes += CStringUtil::MakeUpper(CStringUtil::IntToStr((UCHAR)highbyte, 16));
+        strUTF16Bytes += _T(", ");
+
+        strUTF16Bytes += _T("0x");
+        strUTF16Bytes += CStringUtil::MakeUpper(CStringUtil::IntToStr((UCHAR)lowbyte, 16));
+        strUTF16Bytes += _T(", ");
+    }
+
+    ATL::CWindow wndUTF16 = GetDlgItem(IDC_EDIT_UTF16);
+    wndUTF16.SetWindowText(strUTF16Bytes.c_str());
+    wndUTF16.RedrawWindow();
 }
