@@ -1,0 +1,11 @@
+
+/Debug
+/Release
+/UnicodeToy/Debug
+/UnicodeToy/Release
+/ipch
+*.opensdf
+*.sdf
+*.suo
+*.aps
+*.vcxproj.user
