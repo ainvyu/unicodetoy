@@ -25,6 +25,8 @@ int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPTSTR /*
 	hRes = _Module.Init(NULL, hInstance);
 	ATLASSERT(SUCCEEDED(hRes));
 
+    CStringEncode::InitLocale();
+
 	int nRet = 0;
 	// BLOCK: Run application
 	{

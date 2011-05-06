@@ -51,19 +51,48 @@ LRESULT CMainDlg::OnEnChangeUserInput(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /
 
     // TODO:  Add your control notification handler code here
     ATL::CWindow wndUserInput = GetDlgItem(IDC_EDIT_USERINPUT);
-    ATL::CWindow wndUTF8 = GetDlgItem(IDC_EDIT_UTF8);
     
     std::vector<TCHAR> arr;
-    int nWndTxtSize = wndUserInput.GetWindowTextLengthW();
+    int nWndTxtSize = wndUserInput.GetWindowTextLengthW() + 1;
     arr.resize(nWndTxtSize);
     wndUserInput.GetWindowTextW(&arr[0], nWndTxtSize);
+    arr[nWndTxtSize-1] = '\0';
 
-    std::string strUTF8 = ;
-    std::string strUTF16 = ;
+    std::wstring strUTF16(&arr[0]);
+    if (!strUTF16.empty()) {
+        // UTF-8
+        std::string strUTF8 = CStringEncode::UTF8FromUTF16(strUTF16);
 
-    std::wstring str(&arr[0]);
-    wndUTF8.SetWindowText(str.c_str());
-    wndUTF8.RedrawWindow();
+        std::wstring strUTF8Bytes;
+        std::for_each(strUTF8.begin(), strUTF8.end(), [&] (char byte) {
+            strUTF8Bytes += _T("0x");
+            strUTF8Bytes += CStringUtil::MakeUpper(CStringUtil::IntToStr((UCHAR)byte, 16));
+            strUTF8Bytes += _T(", ");
+        });
+
+        ATL::CWindow wndUTF8 = GetDlgItem(IDC_EDIT_UTF8);
+        wndUTF8.SetWindowText(strUTF8Bytes.c_str());
+        wndUTF8.RedrawWindow();
+
+        // UTF-16
+        std::wstring strUTF16Bytes;
+        for (int i = 0; i < strUTF16.size(); ++i) {
+            char hl = strUTF16[i] & 0xff;
+            char ll = (strUTF16[i] >> 8) & 0xff;
+
+            strUTF16Bytes += _T("0x");
+            strUTF16Bytes += CStringUtil::MakeUpper(CStringUtil::IntToStr((UCHAR)hl, 16));
+            strUTF16Bytes += _T(", ");
+
+            strUTF16Bytes += _T("0x");
+            strUTF16Bytes += CStringUtil::MakeUpper(CStringUtil::IntToStr((UCHAR)ll, 16));
+            strUTF16Bytes += _T(", ");
+        }
+
+        ATL::CWindow wndUTF16 = GetDlgItem(IDC_EDIT_UTF16);
+        wndUTF16.SetWindowText(strUTF16Bytes.c_str());
+        wndUTF16.RedrawWindow();
+    }
     
     return 0;
 }

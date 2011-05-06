@@ -32,4 +32,20 @@ extern CAppModule _Module;
   #pragma comment(linker, "/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 #endif
 
-#include <vector>
+#include <string>
+#include <sstream>
+#include <map>
+#include <set>
+#include <list>
+
+#ifndef UNICODE
+#define tstring std::string
+#define tstringstream std::stringstream
+#define tpath   boost::filesystem::path
+#else
+#define tstring std::wstring
+#define tstringstream std::wstringstream
+#define tpath   boost::filesystem::wpath
+#endif //_UNICODE
+
+#include "libutil.h"
